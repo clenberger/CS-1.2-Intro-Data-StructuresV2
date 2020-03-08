@@ -1,14 +1,20 @@
 import random 
 import sys
 from histogram import histogram
+from book import book
 
 
 def sample_dict(hist):
-
-    total_tokens = sum(hist.values())
-    rand_num = random.randint(1,total_tokens)
+    random_index = random.randint(0, sum(hist.values()))
     total = 0
-    for key, value in hist.items():
-        total += value
-        if total >= rand_num:
-            return key
+    for word,count in hist.items():
+        total += count
+        if total >= random_index:
+            return word
+
+
+if __name__ == "__main__":
+    text = book("words.txt")
+    hist = histogram(text)
+    args = sys.argv[:1]
+    print(sample_dict(hist))
