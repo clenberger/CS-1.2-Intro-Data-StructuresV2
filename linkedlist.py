@@ -1,3 +1,6 @@
+#!python
+
+
 class Node(object):
     
     def __init__(self, data):
@@ -53,25 +56,74 @@ class LinkedList(object):
         """Return the length of this linked list by traversing its nodes.
         TODO: Running time: O(???) Why and under what conditions?"""
         # TODO: Loop through all nodes and count one for each
-
+        temp = self.head
+        count = 0
+        while temp != None:
+            temp = temp.next
+            count += 1
+        return count
+        
     def append(self, item):
         """Insert the given item at the tail of this linked list.
         TODO: Running time: O(???) Why and under what conditions?"""
         # TODO: Create new node to hold given item
         # TODO: Append node after tail, if it exists
-
+        new_node = Node(item)
+        
+        if self.head is None:
+            self.head = new_node
+            self.tail = new_node
+        else:
+            self.tail.next = new_node
+            self.tail = new_node
+            
     def prepend(self, item):
         """Insert the given item at the head of this linked list.
         TODO: Running time: O(???) Why and under what conditions?"""
         # TODO: Create new node to hold given item
         # TODO: Prepend node before head, if it exists
-
+        new_node = Node(item)
+        
+        if self.head is None:
+            self.head = new_node
+            self.tail = new_node
+            # makes new_node head if no head
+        elif self.tail is None:
+            self.tail.next = new_node
+            self.tail = new_node
+        elif self.head != None:
+            new_node.next = self.head
+            self.head = new_node
+        else:
+            return "error"
+            
     def find(self, quality):
         """Return an item from this linked list satisfying the given quality.
         TODO: Best case running time: O(???) Why and under what conditions?
         TODO: Worst case running time: O(???) Why and under what conditions?"""
         # TODO: Loop through all nodes to find item where quality(item) is True
         # TODO: Check if node's data satisfies given quality function
+        node = self.head
+        
+        while node != None:
+            if quality(node.data) == True:
+                #results.append(node_id)
+                return node.data
+            node = node.next
+        return None
+    
+    def print_list(self):
+        print()
+        if(self.head == None):
+            print("Nothing")
+            return
+        print("head", self.head.data)
+        print("tail", self.tail.data)
+        current = self.head
+        while current != None:
+            print(current.data)
+            current = current.next
+        print("\n\n")
 
     def delete(self, item):
         """Delete the given item from this linked list, or raise ValueError.
@@ -81,8 +133,39 @@ class LinkedList(object):
         # TODO: Update previous node to skip around node with matching data
         # TODO: Otherwise raise error to tell user that delete has failed
         # Hint: raise ValueError('Item not found: {}'.format(item))
-
-
+        
+        if self.head != None:
+            if self.head == self.tail and self.head.data == item:
+                self.head = None
+                self.tail = None
+                return
+        else:
+            raise ValueError('Item not found: {}'.format(item))
+            
+        current = self.head.next
+        previous = self.head
+        
+        while current != None:
+            
+            if self.head.data == item: #item in the head
+                if self.head.next != None:
+                    self.head = self.head.next
+                else:
+                    self.head = None
+                return item
+            elif self.head != None: #item elsewhere
+                print("Enter elsewhere")
+                print("Current data", current.data)
+                if current.data == item:
+                    if current == self.tail and previous != None:
+                        self.tail = previous
+                    previous.next = current.next
+                    return item
+            
+            previous = current
+            current = current.next
+        raise ValueError('Item not found: {}'.format(item))
+                
 def test_linked_list():
     ll = LinkedList()
     print('list: {}'.format(ll))
@@ -96,6 +179,8 @@ def test_linked_list():
     print('head: {}'.format(ll.head))
     print('tail: {}'.format(ll.tail))
     print('length: {}'.format(ll.length()))
+    
+    #print(ll.find(lambda item: item == 'B'))
 
     # Enable this after implementing delete method
     delete_implemented = False
@@ -109,7 +194,7 @@ def test_linked_list():
         print('head: {}'.format(ll.head))
         print('tail: {}'.format(ll.tail))
         print('length: {}'.format(ll.length()))
-
-
+    
 if __name__ == '__main__':
+    
     test_linked_list()

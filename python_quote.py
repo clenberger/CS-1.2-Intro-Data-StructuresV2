@@ -1,7 +1,6 @@
 import random
 
-quotes = 
-    ("This is just a test",
+quotes = ("This is just a test",
     "This is not a test",
     "The sound could be a drill")
 

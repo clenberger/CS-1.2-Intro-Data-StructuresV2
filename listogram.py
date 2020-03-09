@@ -6,7 +6,7 @@ class Listogram:
         '''Initializes the listogram properties'''
 
         self.word_list = word_list
-       
+
         self.list_histogram = self.build_listogram()
 
         self.tokens = self.get_num_tokens()
