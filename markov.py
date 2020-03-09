@@ -1,51 +1,41 @@
 from dictogram import Dictogram
 from sample import sample_dict
 from random import choice
+from generate_sentence import generate_sentence
+from book import book
 
-class MarkovChain:
 
-    def __init__(self, word_list):
-        #The Markov chain will be a dictionary of dictionaries
-        #Example: for "one fish two fish red fish blue fish"
-        #{"one": {fish:1}, "fish": {"two":1, "red":1, "blue":1}, "two": {"fish":1}, "red": {"fish":1}, "blue": {"fish:1"}}
-        self.markov_chain = self.build_markov(word_list)
-        self.first_word = list(self.markov_chain.keys())[0]
 
-    def build_markov(self, word_list):
-        markov_chain = {}
 
-        for i in range(len(word_list) - 1):
-            current_word = word_list[i]
-            next_word = word_list[i+1]
+class MarkovChain():
+    def __init__(self, words_list):
+        self.chain = {}
+        for index, previous_word in enumerate(words_list):
+            if index < len(words_list) - 2:
+                current_word = words_list[index+1]
+                words_pair = (previous_word, current_word)
+                if words_pair not in self.chain:
+                        self.chain[words_pair] = Dictogram()
+                next_word = words_list[index+2]
+                self.chain[words_pair].add_count(next_word)
 
-            if current_word in markov_chain.keys():
-                histogram = markov_chain[current_word]
-                histogram.dictionary_histogram[next_word] = histogram.dictionary_histogram.get(next_word, 0) + 1
-                histogram.tokens += 1
-                
-            else:
-                markov_chain[current_word] = Dictogram([next_word])
-
-        return markov_chain
 
     def walk(self, num_words):
-        sampled_list = []
-        sampled_list.append(choice(list(self.markov_chain.keys())))
+        sampled_tuple = ()
+        sampled_words = []
+        sampled_tuple = choice(list(self.chain.keys()))
+        sampled_words.extend(sampled_tuple)
         
-        for i in range(num_words):
-            current_word = sampled_list[i]
-            random_word = self.markov_chain[current_word]
-            random_word = random_word.sample()
-            sampled_list.append(random_word)
-        
-            
-        finished_sentence = ' '.join(sampled_list)
-        return finished_sentence
-            
-    def print_chain(self):
-        for word, histogram in self.markov_chain.items():
-            print(word, histogram.dictionary_histogram)
+        for i in range(0, num_words - 2):
+            sampled_word = self.chain[sampled_tuple].sample()
+            sampled_words.append(sampled_word)
+            second_word = sampled_tuple[1]
+            new_tuple = (second_word, sampled_word)
+            sampled_tuple = new_tuple
+
+        sentence = ' '.join(sampled_words).capitalize()
+        return sentence
 
 
 
-markov_chain = MarkovChain(["one", "fish", "two", "fish", "red", "fish", "blue", "fish"])
+

@@ -11,7 +11,7 @@ def index():
         
     my_list = book('words.txt')
     chain = MarkovChain(my_list)
-    num_words = int(10) - 1
+    num_words = int(15) - 1
     my_sentence = chain.walk(num_words)
 
 
